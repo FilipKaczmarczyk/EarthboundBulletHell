@@ -7,6 +7,7 @@
 #include "EnhancedInputComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -23,6 +24,17 @@ AShooterCharacter::AShooterCharacter()
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = false;
+
+	// DONT ROLL WHEN CONTROLLER ROTATE. CONTROLLER ONLY AFFECT CAMERA.
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationRoll = false;
+	bUseControllerRotationYaw = false;
+
+	// CONFIGURE CHARACTER MOVEMENT
+	GetCharacterMovement()->bOrientRotationToMovement = true; // CHARACTER MOVE IN THE DIRECTION OF INPUT
+	GetCharacterMovement()->RotationRate = FRotator(0.f, 540.f, 0.f); // AT THIS ROTATION RATE
+	GetCharacterMovement()->JumpZVelocity = 600.f;
+	GetCharacterMovement()->AirControl = 0.2f;
 }
 
 // Called when the game starts or when spawned
@@ -104,18 +116,26 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
 void AShooterCharacter::MoveForward(const FInputActionValue& Value)
 {
-	FVector DeltaLocation = FVector::ZeroVector;
-	DeltaLocation.X = Value[0];
-	
-	AddActorLocalOffset(DeltaLocation * 500.f * UGameplayStatics::GetWorldDeltaSeconds(this), true);
+	if((Controller != nullptr) && (Value[0] != 0.0f))
+	{
+		const FRotator Rotation = Controller->GetControlRotation();
+		const FRotator YawRotation{0, Rotation.Yaw, 0};
+
+		const FVector Direction{FRotationMatrix{YawRotation}.GetUnitAxis(EAxis::X)};
+		AddMovementInput(Direction, Value[0]);
+	}
 }
 
 void AShooterCharacter::MoveRight(const FInputActionValue& Value)
 {
-	FVector DeltaLocation = FVector::ZeroVector;
-	DeltaLocation.Y = Value[0];
-	
-	AddActorLocalOffset(DeltaLocation * 500.f * UGameplayStatics::GetWorldDeltaSeconds(this), true);
+	if((Controller != nullptr) && (Value[0] != 0.0f))
+	{
+		const FRotator Rotation = Controller->GetControlRotation();
+		const FRotator YawRotation{0, Rotation.Yaw, 0};
+
+		const FVector Direction{FRotationMatrix{YawRotation}.GetUnitAxis(EAxis::Y)};
+		AddMovementInput(Direction, Value[0]);
+	}
 }
 
 void AShooterCharacter::TurnAtRate(const FInputActionValue& Value)
