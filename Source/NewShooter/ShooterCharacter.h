@@ -48,6 +48,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	UInputAction* JumpAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	UInputAction* FireButtonAction;
+
 	void MoveForward(const FInputActionValue& Value);
 
 	void MoveRight(const FInputActionValue& Value);
@@ -62,6 +65,8 @@ protected:
 
 	void Jump(const FInputActionValue& Value);
 
+	void FireWeapon(const FInputActionValue& Value);
+
 private:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"));
@@ -75,6 +80,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"));
 	float BaseLookUpRate = 15;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat, meta = (AllowPrivateAccess = "true"));
+	class USoundCue* FireSound;
 public:
 	
 	AShooterCharacter();

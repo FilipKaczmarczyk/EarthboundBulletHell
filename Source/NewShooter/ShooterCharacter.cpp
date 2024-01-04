@@ -7,8 +7,10 @@
 #include "EnhancedInputComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "AssetTypeActions/AssetDefinition_SoundBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 
 // Sets default values
 AShooterCharacter::AShooterCharacter()
@@ -111,6 +113,11 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 		{
 			PlayerEnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &AShooterCharacter::Jump);
 		}
+
+		if (FireButtonAction)
+		{
+			PlayerEnhancedInputComponent->BindAction(FireButtonAction, ETriggerEvent::Started, this, &AShooterCharacter::FireWeapon);
+		}
 	}
 }
 
@@ -161,6 +168,14 @@ void AShooterCharacter::LookUp(const FInputActionValue& Value)
 void AShooterCharacter::Jump(const FInputActionValue& Value)
 {
 	Super::Jump();
+}
+
+void AShooterCharacter::FireWeapon(const FInputActionValue& Value)
+{
+	if(FireSound)
+	{
+		UGameplayStatics::PlaySound2D(this, FireSound);
+	}
 }
 
 
