@@ -8,6 +8,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "AssetTypeActions/AssetDefinition_SoundBase.h"
+#include "Engine/SkeletalMeshSocket.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
@@ -175,6 +176,18 @@ void AShooterCharacter::FireWeapon(const FInputActionValue& Value)
 	if(FireSound)
 	{
 		UGameplayStatics::PlaySound2D(this, FireSound);
+	}
+
+	const USkeletalMeshSocket* BarrelSocket = GetMesh()->GetSocketByName("weapon_barrel_socket");
+
+	if(BarrelSocket)
+	{
+		const FTransform BarrelSocketTransform = BarrelSocket->GetSocketTransform(GetMesh());
+
+		if(MuzzleFlash)
+		{
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MuzzleFlash, BarrelSocketTransform);
+		}
 	}
 }
 
