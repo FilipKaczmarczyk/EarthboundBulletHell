@@ -22,20 +22,21 @@ AShooterCharacter::AShooterCharacter()
 
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
-	CameraBoom->TargetArmLength = 300.f;
-	CameraBoom->bUsePawnControlRotation = true;
+	CameraBoom->TargetArmLength = 300.f; // Camera follow distance
+	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
+	CameraBoom->SocketOffset = FVector(0.f, 50.f, 50.f);
 
-	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
-	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
-	FollowCamera->bUsePawnControlRotation = false;
+	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera")); 
+	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach camera to spring arm
+	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
-	// DONT ROLL WHEN CONTROLLER ROTATE. CONTROLLER ONLY AFFECT CAMERA.
+	// DONT ROTATE WHEN CONTROLLER ROTATE. CONTROLLER ONLY AFFECT CAMERA.
 	bUseControllerRotationPitch = false;
-	bUseControllerRotationRoll = false;
+	bUseControllerRotationRoll = true;
 	bUseControllerRotationYaw = false;
 
 	// CONFIGURE CHARACTER MOVEMENT
-	GetCharacterMovement()->bOrientRotationToMovement = true; // CHARACTER MOVE IN THE DIRECTION OF INPUT
+	GetCharacterMovement()->bOrientRotationToMovement = false; // CHARACTER MOVE IN THE DIRECTION OF INPUT
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 540.f, 0.f); // AT THIS ROTATION RATE
 	GetCharacterMovement()->JumpZVelocity = 600.f;
 	GetCharacterMovement()->AirControl = 0.2f;
