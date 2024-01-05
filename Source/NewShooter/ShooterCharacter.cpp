@@ -191,7 +191,63 @@ void AShooterCharacter::FireWeapon(const FInputActionValue& Value)
 			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MuzzleFlash, BarrelSocketTransform);
 		}
 
-		FHitResult FireHit;
+		// Get current size of the viewport
+		FVector2D ViewportSize;
+		if (GEngine && GEngine->GameViewport)
+		{
+			
+			GEngine->GameViewport->GetViewportSize(ViewportSize);
+		}
+
+		// Get screen space location of crosshair
+		FVector2D CrosshairLocation(ViewportSize.X / 2.f, ViewportSize.Y / 2.f);
+		CrosshairLocation.Y -= 50.f;
+		FVector CrosshairWorldPosition;
+		FVector CrosshairWorldDirection;
+
+		// Get world position and direction of crosshair
+		bool bScreenToWorld = UGameplayStatics::DeprojectScreenToWorld
+		(
+			UGameplayStatics::GetPlayerController(this, 0),
+			CrosshairLocation,
+			CrosshairWorldPosition,
+			CrosshairWorldDirection
+		);
+
+		if (bScreenToWorld) // Was deproject success?
+		{
+			FHitResult ScreenTraceHit;
+			const FVector Start { CrosshairWorldPosition };
+			const FVector End { CrosshairWorldPosition + CrosshairWorldDirection * 50'000.f };
+
+			// Set beam end point to line trace end point 
+			FVector BeamEndPoint { End };
+
+			// Trace outward from crosshair world location
+			GetWorld()->LineTraceSingleByChannel(ScreenTraceHit, Start, End, ECollisionChannel::ECC_Visibility);
+			
+			if(ScreenTraceHit.bBlockingHit) // Was there a trace hit?
+			{
+				// Bream end point is now trace hit location
+				BeamEndPoint = ScreenTraceHit.Location;
+
+				if(ImpactParticles)
+				{
+					UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactParticles, ScreenTraceHit.Location);
+				}
+			}
+
+			if(BeamParticles)
+			{
+				UParticleSystemComponent* Beam = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), BeamParticles, BarrelSocketTransform);
+				if(Beam)
+				{
+					Beam->SetVectorParameter(FName{"Target"}, BeamEndPoint);
+				}
+			}
+		}
+
+		/*FHitResult FireHit;
 		const FVector Start {BarrelSocketTransform.GetLocation()};
 		const FQuat Rotation {BarrelSocketTransform.GetRotation()};
 		const FVector RotationAxis {Rotation.GetAxisX()};
@@ -220,7 +276,7 @@ void AShooterCharacter::FireWeapon(const FInputActionValue& Value)
 			{
 				Beam->SetVectorParameter(FName{"Target"}, BeamEndPoint);
 			}
-		}
+		}*/
 	}
 
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
