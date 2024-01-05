@@ -89,6 +89,9 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat, meta = (AllowPrivateAccess = "true"));
 	class UAnimMontage* HipFireMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat, meta = (AllowPrivateAccess = "true"));
+	class UParticleSystem* ImpactParticles;
 	
 public:
 	
