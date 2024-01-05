@@ -81,17 +81,25 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"));
 	float BaseLookUpRate = 15;
 
+	/** Sound spawned when shot */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat, meta = (AllowPrivateAccess = "true"));
 	class USoundCue* FireSound;
-
+	
+	/** Flash spawned at barrel when shot */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat, meta = (AllowPrivateAccess = "true"));
-	class UParticleSystem* MuzzleFlash;
+	UParticleSystem* MuzzleFlash;
 
+	/** Montage for firing weapon */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat, meta = (AllowPrivateAccess = "true"));
-	class UAnimMontage* HipFireMontage;
-
+	UAnimMontage* HipFireMontage;
+	
+	/** Particles spawned when bullet impact world element*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat, meta = (AllowPrivateAccess = "true"));
-	class UParticleSystem* ImpactParticles;
+	UParticleSystem* ImpactParticles;
+	
+	/** Smoke trail for bullets */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat, meta = (AllowPrivateAccess = "true"));
+	UParticleSystem* BeamParticles;
 	
 public:
 	
