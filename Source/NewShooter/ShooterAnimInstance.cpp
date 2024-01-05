@@ -28,10 +28,6 @@ void UShooterAnimInstance::UpdateAnimationProperties(float DeltaTime)
 		{
 			bIsAccelerating = false;
 		}
-
-		UE_LOG(LogTemp, Log, TEXT("Is in the air: %d"), bIsInAir);
-		UE_LOG(LogTemp, Log, TEXT("Is accelerating: %d"), bIsAccelerating);
-		UE_LOG(LogTemp, Log, TEXT("Speed: %f"), Speed);
 	}
 }
 
