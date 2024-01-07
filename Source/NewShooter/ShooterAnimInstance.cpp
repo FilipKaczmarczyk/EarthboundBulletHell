@@ -5,6 +5,7 @@
 
 #include "ShooterCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 void UShooterAnimInstance::UpdateAnimationProperties(float DeltaTime)
 {
@@ -28,6 +29,14 @@ void UShooterAnimInstance::UpdateAnimationProperties(float DeltaTime)
 		{
 			bIsAccelerating = false;
 		}
+
+		// Get Aim rotation of the pawn
+		FRotator AimRotation = ShooterCharacter->GetBaseAimRotation();
+		// Get Movement rotation of the pawn
+		FRotator MovementRotation = UKismetMathLibrary::MakeRotFromX(ShooterCharacter->GetVelocity());
+
+		// Get difference between movement and aiming rotation
+		MovementOffsetYaw = UKismetMathLibrary::NormalizedDeltaRotator(MovementRotation, AimRotation).Yaw;
 	}
 }
 
