@@ -49,6 +49,9 @@ protected:
 	UInputAction* JumpAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	UInputAction* AimAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	UInputAction* FireButtonAction;
 
 	void MoveForward(const FInputActionValue& Value);
@@ -68,6 +71,10 @@ protected:
 	void FireWeapon(const FInputActionValue& Value);
 
 	bool GetBeamEndLocation(const FVector& MuzzleSocketLocation, FVector& OutBeamLocation);
+
+	void AimingModePressed();
+
+	void AimingModeReleased();
 
 private:
 	
@@ -102,6 +109,16 @@ private:
 	/** Smoke trail for bullets */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat, meta = (AllowPrivateAccess = "true"));
 	UParticleSystem* BeamParticles;
+
+	/** Are we in aiming mode? */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Combat, meta = (AllowPrivateAccess = "true"));
+	bool bAiming;
+	
+	/** Default Camera FOV */
+	float CameraDefaultFOV;
+	
+	/** Camera FOV in Aiming Mode */
+	float CameraZoomedFOV;
 	
 public:
 	
