@@ -139,9 +139,11 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
-	USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
+	FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 
-	UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+	FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
-	APlayerController* GetPlayerController() const { return PlayerController; };
+	FORCEINLINE APlayerController* GetPlayerController() const { return PlayerController; };
+
+	FORCEINLINE bool GetAiming() const { return bAiming; }
 };
