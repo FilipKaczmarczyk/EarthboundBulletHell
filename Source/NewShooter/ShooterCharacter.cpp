@@ -15,9 +15,21 @@
 
 // Sets default values
 AShooterCharacter::AShooterCharacter() :
+// BASE RATES FOR TURNING/LOOKING UP
 	BaseTurnRate(45.f),
 	BaseLookUpRate(45.f),
 	bAiming(false),
+// TURN RATES AND LOOK UP/DOWN FOR AIMING/NOT AIMING
+	HipTurnRate(90.f),
+	HipLookUpRate(90.f),
+	AimingTurnRate(20.f),
+	AimingLookUpRate(20.f),
+// TURN RATES FOR AND LOOK UP/DOWN MODIFIERS FOR MOUSE
+	HipTurnRateModifier(1.f),
+	HipLookUpRateModifier(1.f),
+	AimingTurnRateModifier(0.22f),
+	AimingLookUpRateModifier(0.22f),
+// CAMERA FOV VALUES
 	CameraDefaultFOV(0.f),
 	CameraZoomedFOV(35.f),
 	ZoomInterpSpeed(20.f),
@@ -90,6 +102,9 @@ void AShooterCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	HandleCameraZoom(DeltaTime);
+
+	// Change look sensitivity depends player aim
+	HandleTurnRates();
 }
 
 // Called to bind functionality to input
@@ -181,12 +196,16 @@ void AShooterCharacter::LookUpAtRate(const FInputActionValue& Value)
 
 void AShooterCharacter::Turn(const FInputActionValue& Value)
 {
-	AddControllerYawInput(Value[0]);
+	const float TurnValue = bAiming ? Value[0] * AimingTurnRateModifier : Value[0] * HipTurnRateModifier;
+	
+	AddControllerYawInput(TurnValue);
 }
 
 void AShooterCharacter::LookUp(const FInputActionValue& Value)
 {
-	AddControllerPitchInput(Value[0]);
+	const float LookUpValue = bAiming ? Value[0] * AimingLookUpRateModifier : Value[0] * HipLookUpRateModifier;
+	
+	AddControllerPitchInput(LookUpValue);
 }
 
 void AShooterCharacter::Jump(const FInputActionValue& Value)
@@ -329,6 +348,20 @@ void AShooterCharacter::HandleCameraZoom(float DeltaTime)
 	}
 
 	GetFollowCamera()->SetFieldOfView(CameraCurrentFOV);
+}
+
+void AShooterCharacter::HandleTurnRates()
+{
+	if (bAiming)
+	{
+		BaseTurnRate = AimingTurnRate;
+		BaseLookUpRate = AimingLookUpRate;
+	}
+	else
+	{
+		BaseTurnRate = HipTurnRate;
+		BaseLookUpRate = HipLookUpRate;
+	}
 }
 
 

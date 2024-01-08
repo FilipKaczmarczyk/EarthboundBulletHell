@@ -78,19 +78,56 @@ protected:
 
 	void HandleCameraZoom(float DeltaTime);
 
+	void HandleTurnRates();
+
 private:
-	
+	/** Camera Holder */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"));
 	class USpringArmComponent* CameraBoom;
-
+	
+	/** Camera follows player */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"));
 	class UCameraComponent* FollowCamera;
 
+	/** Base turn rate (deg/sec) */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"));
 	float BaseTurnRate = 15;
-
+	
+	/** Base look up/down rate (deg/sec) */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"));
 	float BaseLookUpRate = 15;
+	
+	/** Turn rate when not aiming*/
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"));
+	float HipTurnRate;
+
+	/** Base look up/down rate when not aiming*/
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"));
+	float HipLookUpRate;
+	
+	/** Turn rate when aiming*/
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"));
+	float AimingTurnRate;
+
+	/** Base look up/down rate when aiming*/
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"));
+	float AimingLookUpRate;
+
+	/** Turn rate modifier when not aiming (mouse only)*/
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true", ClampMin = "0.0", ClampMax = "1.0", UIMin = "0.0", UIMax = "1.0"));
+	float HipTurnRateModifier;
+
+	/** Look up/down modifier when not aiming (mouse only)*/
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true", ClampMin = "0.0", ClampMax = "1.0", UIMin = "0.0", UIMax = "1.0"));
+	float HipLookUpRateModifier;
+	
+	/** Turn rate modifier when aiming (mouse only)*/
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true", ClampMin = "0.0", ClampMax = "1.0", UIMin = "0.0", UIMax = "1.0"));
+	float AimingTurnRateModifier;
+
+	/** Look up/down modifier when aiming (mouse only)*/
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true", ClampMin = "0.0", ClampMax = "1.0", UIMin = "0.0", UIMax = "1.0"));
+	float AimingLookUpRateModifier;
 
 	/** Sound spawned when shot */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat, meta = (AllowPrivateAccess = "true"));
