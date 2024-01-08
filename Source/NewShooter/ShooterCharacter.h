@@ -80,6 +80,8 @@ protected:
 
 	void HandleTurnRates();
 
+	void CalculateCrosshairSpread(float DeltaTime);
+
 private:
 	/** Camera Holder */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"));
@@ -166,6 +168,26 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Combat, meta = (AllowPrivateAccess = "true"));
 	float ZoomInterpSpeed;
 	
+	/** Determines the spread of the crosshair */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Crosshairs, meta = (AllowPrivateAccess = "true"));
+	float CrosshairSpreadMultiplier;
+	
+	/** Velocity factor influencing spreads */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Crosshairs, meta = (AllowPrivateAccess = "true"));
+	float CrosshairVelocityFactor;
+
+	/** In air factor influencing spreads */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Crosshairs, meta = (AllowPrivateAccess = "true"));
+	float CrosshairInAirFactor;
+	
+	/** Aiming factor influencing spreads */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Crosshairs, meta = (AllowPrivateAccess = "true"));
+	float CrosshairAimFactor;
+	
+	/** Shooting factor influencing spreads */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Crosshairs, meta = (AllowPrivateAccess = "true"));
+	float CrosshairShootingFactor;
+	
 public:
 	
 	AShooterCharacter();
@@ -183,4 +205,7 @@ public:
 	FORCEINLINE APlayerController* GetPlayerController() const { return PlayerController; };
 
 	FORCEINLINE bool GetAiming() const { return bAiming; }
+
+	UFUNCTION(BlueprintCallable)
+	float GetCrosshairSpreadMultiplier() const;
 };

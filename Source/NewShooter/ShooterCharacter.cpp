@@ -105,6 +105,8 @@ void AShooterCharacter::Tick(float DeltaTime)
 
 	// Change look sensitivity depends player aim
 	HandleTurnRates();
+
+	CalculateCrosshairSpread(DeltaTime);
 }
 
 // Called to bind functionality to input
@@ -158,6 +160,11 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 			PlayerEnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Completed, this, &AShooterCharacter::AimingModeReleased);
 		}
 	}
+}
+
+float AShooterCharacter::GetCrosshairSpreadMultiplier() const
+{
+	return CrosshairSpreadMultiplier;
 }
 
 void AShooterCharacter::MoveForward(const FInputActionValue& Value)
@@ -362,6 +369,18 @@ void AShooterCharacter::HandleTurnRates()
 		BaseTurnRate = HipTurnRate;
 		BaseLookUpRate = HipLookUpRate;
 	}
+}
+
+void AShooterCharacter::CalculateCrosshairSpread(float DeltaTime)
+{
+	FVector2D WalkSpeedRange{0.f, 600.f};
+	FVector2D VelocityMultiplierRange{0.f, 1.f};
+	FVector Velocity { GetVelocity() };
+	Velocity.Z = 0;
+
+	CrosshairVelocityFactor = FMath::GetMappedRangeValueClamped(WalkSpeedRange, VelocityMultiplierRange, Velocity.Size());
+	
+	CrosshairSpreadMultiplier = CrosshairVelocityFactor;
 }
 
 
