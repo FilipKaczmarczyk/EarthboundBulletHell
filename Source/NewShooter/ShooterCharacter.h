@@ -76,6 +76,8 @@ protected:
 
 	void AimingModeReleased();
 
+	void HandleCameraZoom(float DeltaTime);
+
 private:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"));
@@ -119,6 +121,13 @@ private:
 	
 	/** Camera FOV in Aiming Mode */
 	float CameraZoomedFOV;
+	
+	/** Camera Current FOV in this frame */
+	float CameraCurrentFOV;
+
+	/** Speed for zooming when aim */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Combat, meta = (AllowPrivateAccess = "true"));
+	float ZoomInterpSpeed;
 	
 public:
 	
