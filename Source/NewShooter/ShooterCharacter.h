@@ -82,6 +82,11 @@ protected:
 
 	void CalculateCrosshairSpread(float DeltaTime);
 
+	void StartCrosshairBulletFire();
+	
+	UFUNCTION()
+	void FinishCrosshairBulletFire();
+
 private:
 	/** Camera Holder */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"));
@@ -187,6 +192,10 @@ private:
 	/** Shooting factor influencing spreads */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Crosshairs, meta = (AllowPrivateAccess = "true"));
 	float CrosshairShootingFactor;
+
+	float ShootTimeDuration;
+	bool bFiringBullet;
+	FTimerHandle CrosshairShootTimer;
 	
 public:
 	
