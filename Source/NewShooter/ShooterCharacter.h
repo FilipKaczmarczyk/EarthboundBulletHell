@@ -66,14 +66,13 @@ protected:
 
 	void LookUp(const FInputActionValue& Value);
 
-	void Jump(const FInputActionValue& Value);
+	void Jump();
 
-	void FireWeapon(const FInputActionValue& Value);
+	void FireWeapon();
 
 	bool GetBeamEndLocation(const FVector& MuzzleSocketLocation, FVector& OutBeamLocation);
 
 	void AimingModePressed();
-
 	void AimingModeReleased();
 
 	void HandleCameraZoom(float DeltaTime);
@@ -86,6 +85,14 @@ protected:
 	
 	UFUNCTION()
 	void FinishCrosshairBulletFire();
+
+	void FireButtonPressed();
+	void FireButtonReleased();
+
+	void StartFireTimer();
+	
+	UFUNCTION()
+	void AutoFireReset();
 
 private:
 	/** Camera Holder */
@@ -196,6 +203,18 @@ private:
 	float ShootTimeDuration;
 	bool bFiringBullet;
 	FTimerHandle CrosshairShootTimer;
+
+	/** Fire button pressed */
+	bool bFireButtonPressed;
+
+	/** True when we can fire. False when waiting for the timer */
+	bool bShouldFire;
+
+	/** Rate of automatic gun fire */
+	float AutomaticFireRate;
+
+	/** Sets a timer between gunshots*/
+	FTimerHandle AutoFireTimer;
 	
 public:
 	

@@ -42,7 +42,10 @@ AShooterCharacter::AShooterCharacter() :
 	CrosshairShootingFactor(0.f),
 // BULLET FIRE TIMER VARIABLES
 	ShootTimeDuration(0.05f),
-	bFiringBullet(false)
+	bFiringBullet(false),
+// AUTOMATIC GUN FIRE RATE
+	AutomaticFireRate(0.1f),
+	bShouldFire(true)
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -160,7 +163,8 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
 		if (FireButtonAction)
 		{
-			PlayerEnhancedInputComponent->BindAction(FireButtonAction, ETriggerEvent::Started, this, &AShooterCharacter::FireWeapon);
+			PlayerEnhancedInputComponent->BindAction(FireButtonAction, ETriggerEvent::Started, this, &AShooterCharacter::FireButtonPressed);
+			PlayerEnhancedInputComponent->BindAction(FireButtonAction, ETriggerEvent::Completed, this, &AShooterCharacter::FireButtonReleased);
 		}
 
 		if (AimAction)
@@ -224,12 +228,12 @@ void AShooterCharacter::LookUp(const FInputActionValue& Value)
 	AddControllerPitchInput(LookUpValue);
 }
 
-void AShooterCharacter::Jump(const FInputActionValue& Value)
+void AShooterCharacter::Jump()
 {
 	Super::Jump();
 }
 
-void AShooterCharacter::FireWeapon(const FInputActionValue& Value)
+void AShooterCharacter::FireWeapon()
 {
 	if(FireSound)
 	{
@@ -446,6 +450,37 @@ void AShooterCharacter::StartCrosshairBulletFire()
 void AShooterCharacter::FinishCrosshairBulletFire()
 {
 	bFiringBullet = false;
+}
+
+void AShooterCharacter::FireButtonPressed()
+{
+	bFireButtonPressed = true;
+	StartFireTimer();
+}
+
+void AShooterCharacter::FireButtonReleased()
+{
+	bFireButtonPressed = false;
+}
+
+void AShooterCharacter::StartFireTimer()
+{
+	if (bShouldFire)
+	{
+		FireWeapon();
+		bShouldFire = false;
+		GetWorldTimerManager().SetTimer(AutoFireTimer, this, &AShooterCharacter::AutoFireReset, AutomaticFireRate);
+	}
+}
+
+void AShooterCharacter::AutoFireReset()
+{
+	bShouldFire = true;
+	
+	if (bFireButtonPressed)
+	{
+		StartFireTimer();
+	}
 }
 
 
