@@ -95,7 +95,7 @@ protected:
 	void AutoFireReset();
 
 	/** Line trace for items under the crosshair */
-	bool TraceUnderCrosshairs(FHitResult& OutHitResult);
+	bool TraceUnderCrosshairs(FHitResult& OutHitResult, FVector& OutHitLocation);
 
 private:
 	/** Camera Holder */
