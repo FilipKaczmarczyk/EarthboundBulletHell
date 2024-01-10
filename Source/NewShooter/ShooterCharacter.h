@@ -94,6 +94,9 @@ protected:
 	UFUNCTION()
 	void AutoFireReset();
 
+	/** Line trace for items under the crosshair */
+	bool TraceUnderCrosshairs(FHitResult& OutHitResult);
+
 private:
 	/** Camera Holder */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"));

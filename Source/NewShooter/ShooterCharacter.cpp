@@ -2,11 +2,12 @@
 
 
 #include "ShooterCharacter.h"
-
 #include "Camera/CameraComponent.h"
 #include "EnhancedInputComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Item.h"
+#include "Components/WidgetComponent.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -119,6 +120,18 @@ void AShooterCharacter::Tick(float DeltaTime)
 	HandleTurnRates();
 
 	CalculateCrosshairSpread(DeltaTime);
+
+	FHitResult ItemTraceResult;
+	TraceUnderCrosshairs(ItemTraceResult);
+	if (ItemTraceResult.bBlockingHit)
+	{
+		AItem* HitItem = Cast<AItem>(ItemTraceResult.GetActor());
+		if (HitItem && HitItem->GetPickupWidget())
+		{
+			// Show item pickup widget
+			HitItem->GetPickupWidget()->SetVisibility(true);	
+		}
+	}
 }
 
 // Called to bind functionality to input
@@ -481,6 +494,46 @@ void AShooterCharacter::AutoFireReset()
 	{
 		StartFireTimer();
 	}
+}
+
+bool AShooterCharacter::TraceUnderCrosshairs(FHitResult& OutHitResult)
+{
+	// Get Viewport Size
+	FVector2d ViewportSize;
+	if (GEngine && GEngine->GameViewport)
+	{
+		GEngine->GameViewport->GetViewportSize(ViewportSize);
+	}
+
+	// Get screen space location of crosshair
+	FVector2D CrosshairLocation(ViewportSize.X / 2.f, ViewportSize.Y / 2.f);
+	CrosshairLocation.Y -= 50.f;
+	FVector CrosshairWorldPosition;
+	FVector CrosshairWorldDirection;
+
+	// Get world position and direction of crosshair
+	bool bScreenToWorld = UGameplayStatics::DeprojectScreenToWorld
+	(
+		UGameplayStatics::GetPlayerController(this, 0),
+		CrosshairLocation,
+		CrosshairWorldPosition,
+		CrosshairWorldDirection
+	);
+
+	if(bScreenToWorld)
+	{
+		// Trace form Crosshair world location outward
+		const FVector Start { CrosshairWorldPosition };
+		const FVector End {Start + CrosshairWorldDirection * 50'000};
+		GetWorld()->LineTraceSingleByChannel(OutHitResult, Start, End, ECC_Visibility);
+
+		if (OutHitResult.bBlockingHit)
+		{
+			return true;
+		}
+	}
+	
+	return false;
 }
 
 
