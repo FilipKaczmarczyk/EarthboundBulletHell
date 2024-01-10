@@ -66,6 +66,9 @@ private:
 	/** The name appears on the widget */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
 	FString ItemName;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
+	int32 ItemCount;
 
 public:
 	FORCEINLINE UWidgetComponent* GetPickupWidget() const {return PickupWidget; }
