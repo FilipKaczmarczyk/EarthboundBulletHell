@@ -100,6 +100,8 @@ protected:
 	/** Trace for items if OverlappedItemCount > 0 */
 	void TraceForItems();
 
+	void SpawnDefaultWeapon();
+
 private:
 	/** Camera Holder */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"));
@@ -231,6 +233,14 @@ private:
 	/** Current trace item */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Items,  meta = (AllowPrivateAccess = "true"));
 	class AItem* HitItemLastFrame;
+
+	/** Currently equipped weapon */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Combat,  meta = (AllowPrivateAccess = "true"));
+	class AWeapon* EquippedWeapon;
+
+	/** Set this in Blueprints for the default weapon class */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Combat,  meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<AWeapon> DefaultWeaponClass; 
 	
 public:
 	

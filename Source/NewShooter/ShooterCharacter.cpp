@@ -7,6 +7,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Item.h"
+#include "Weapon.h"
 #include "Components/WidgetComponent.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -101,6 +102,9 @@ void AShooterCharacter::BeginPlay()
 			Subsystem->AddMappingContext(DefaultInputMappingContext, DefaultInputMappingPriority);
 		}
 	}
+
+	// Spawn the default weapon and attach to the mesh
+	SpawnDefaultWeapon();
 }
 
 void AShooterCharacter::AssignPlayerController()
@@ -556,4 +560,25 @@ void AShooterCharacter::IncrementOverlappedItemCount(int Amount)
 	}
 }
 
+void AShooterCharacter::SpawnDefaultWeapon()
+{
+	// Check the TSubclassOf Variable
+	if (DefaultWeaponClass)
+	{
+		// Spawn weapon
+		AWeapon* DefaultWeapon = GetWorld()->SpawnActor<AWeapon>(DefaultWeaponClass);
+
+		// Get hand socket
+		const USkeletalMeshSocket* HandSocket = GetMesh()->GetSocketByName(FName("RightHandSocket"));
+
+		if (HandSocket)
+		{
+			// attach weapon to the hand socket ("RightHandSocket")
+			HandSocket->AttachActor(DefaultWeapon, GetMesh());
+		}
+
+		// Set EquippedWeapon to the newly spawned weapon
+		EquippedWeapon = DefaultWeapon;
+	}	
+}
 
