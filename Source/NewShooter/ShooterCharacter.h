@@ -100,7 +100,11 @@ protected:
 	/** Trace for items if OverlappedItemCount > 0 */
 	void TraceForItems();
 
-	void SpawnDefaultWeapon();
+	/** Spawn default weapon and equips it */
+	class AWeapon* SpawnDefaultWeapon();
+
+	/** Takes a weapon and attaches it to the mesh */
+	void EquipWeapon(AWeapon* WeaponToEquip);
 
 private:
 	/** Camera Holder */
