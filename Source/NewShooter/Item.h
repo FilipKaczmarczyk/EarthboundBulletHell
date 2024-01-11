@@ -6,6 +6,18 @@
 #include "GameFramework/Actor.h"
 #include "Item.generated.h"
 
+UENUM(BlueprintType)
+enum class EItemRarity : uint8
+{
+	EIR_Common UMETA(DisplayName = "Common"),
+	EIR_Rare UMETA(DisplayName = "Rare"),
+	EIR_Epic UMETA(DisplayName = "Epic"),
+	EIR_Legendary UMETA(DisplayName = "Legendary"),
+	EIR_Mythic UMETA(DisplayName = "Mythic"),
+
+	EIR_MAX UMETA(DisplayName = "DefaultMAX")
+};
+
 UCLASS()
 class NEWSHOOTER_API AItem : public AActor
 {
@@ -41,6 +53,9 @@ protected:
 		int32 OtherBodyIndex
 	);
 
+	/** Set active stars array based on item rarity */
+	void SetActiveStars();
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -69,6 +84,13 @@ private:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
 	int32 ItemCount;
+
+	/** Item rarity determines stars */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
+	EItemRarity ItemRarity;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
+	TArray<bool> ActiveStars;
 
 public:
 	FORCEINLINE UWidgetComponent* GetPickupWidget() const {return PickupWidget; }
