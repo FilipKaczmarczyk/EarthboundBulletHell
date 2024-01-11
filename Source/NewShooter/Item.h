@@ -69,6 +69,9 @@ protected:
 	/** Set active stars array based on item rarity */
 	void SetActiveStars();
 
+	/** Set properties of the item's components base of state */
+	void SetItemProperties(EItemState State);
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -112,7 +115,8 @@ private:
 public:
 	FORCEINLINE UWidgetComponent* GetPickupWidget() const {return PickupWidget; }
 	FORCEINLINE USphereComponent* GetAreaSphere() const { return AreaSphere; }
-	FORCEINLINE UBoxComponent* GetCollisionBox() const {return CollisionBox; }
-	FORCEINLINE EItemState GetItemState() const {return ItemState; }
-	FORCEINLINE void SetItemState(EItemState State) { ItemState = State; }
+	FORCEINLINE UBoxComponent* GetCollisionBox() const { return CollisionBox; }
+	FORCEINLINE EItemState GetItemState() const { return ItemState; }
+	void SetItemState(EItemState State);
+	FORCEINLINE USkeletalMeshComponent* GetItemMesh() const { return ItemMesh; }
 };

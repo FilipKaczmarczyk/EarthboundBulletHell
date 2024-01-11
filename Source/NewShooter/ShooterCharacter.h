@@ -106,6 +106,9 @@ protected:
 	/** Takes a weapon and attaches it to the mesh */
 	void EquipWeapon(AWeapon* WeaponToEquip);
 
+	/** Detach weapon and let it fall */
+	void DropWeapon();
+
 private:
 	/** Camera Holder */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"));

@@ -15,7 +15,6 @@ AItem::AItem() :
 	ItemRarity(EItemRarity::EIR_Common),
 	ItemState(EItemState::EIS_Pickup)
 {
- 	// Set t	his actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	ItemMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("ItemMesh"));
@@ -49,6 +48,9 @@ void AItem::BeginPlay()
 	// Setup overlap for AreaSphere
 	AreaSphere->OnComponentBeginOverlap.AddDynamic(this, &AItem::OnSphereOverlap);
 	AreaSphere->OnComponentEndOverlap.AddDynamic(this, &AItem::OnSphereEndOverlap);
+
+	// Set Item properties based on ItemState
+	SetItemProperties(ItemState);
 }
 
 // Called every frame
@@ -57,8 +59,14 @@ void AItem::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+void AItem::SetItemState(EItemState State)
+{
+	ItemState = State;
+	SetItemProperties(State);
+}
+
 void AItem::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+                            UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (OtherActor)
 	{
@@ -93,6 +101,55 @@ void AItem::SetActiveStars()
 	for (int32 i = 1; i <= static_cast<int>(ItemRarity) + 1; i++)
 	{
 		ActiveStars[i] = true;
+	}
+}
+
+void AItem::SetItemProperties(EItemState State)
+{
+	switch (State)
+	{
+		case EItemState::EIS_Pickup:
+			
+			ItemMesh->SetSimulatePhysics(false);
+			ItemMesh->SetVisibility(true);
+			ItemMesh->SetCollisionResponseToAllChannels(ECR_Ignore);
+			ItemMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+			AreaSphere->SetCollisionResponseToAllChannels(ECR_Overlap);
+			AreaSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+
+			CollisionBox->SetCollisionResponseToAllChannels(ECR_Ignore);
+			CollisionBox->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+			AreaSphere->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		
+			break;
+		
+		case EItemState::EIS_EquipInterping:
+			break;
+		
+		case EItemState::EIS_PickedUp:
+			break;
+		
+		case EItemState::EIS_Equipped:
+			
+			ItemMesh->SetSimulatePhysics(false);
+			ItemMesh->SetVisibility(true);
+			ItemMesh->SetCollisionResponseToAllChannels(ECR_Ignore);
+			ItemMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+			AreaSphere->SetCollisionResponseToAllChannels(ECR_Ignore);
+			AreaSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+			CollisionBox->SetCollisionResponseToAllChannels(ECR_Ignore);
+			AreaSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+			
+			break;
+		
+		case EItemState::EIS_Falling:
+			break;
+		
+		case EItemState::EIS_MAX:
+			break;
 	}
 }
 

@@ -577,12 +577,6 @@ void AShooterCharacter::EquipWeapon(AWeapon* WeaponToEquip)
 {
 	if (WeaponToEquip)
 	{
-		// Set AreSphere to ignore all collision channels
-		WeaponToEquip->GetAreaSphere()->SetCollisionResponseToChannels(ECollisionResponse::ECR_Ignore);
-
-		// Set CollisionBox to ignore all collision channels
-		WeaponToEquip->GetCollisionBox()->SetCollisionResponseToChannels(ECollisionResponse::ECR_Ignore);
-	
 		// Get hand socket
 		const USkeletalMeshSocket* HandSocket = GetMesh()->GetSocketByName(FName("RightHandSocket"));
 
@@ -595,6 +589,15 @@ void AShooterCharacter::EquipWeapon(AWeapon* WeaponToEquip)
 		// Set EquippedWeapon to the newly spawned weapon
 		EquippedWeapon = WeaponToEquip;
 		EquippedWeapon->SetItemState(EItemState::EIS_Equipped);
+	}
+}
+
+void AShooterCharacter::DropWeapon()
+{
+	if (EquippedWeapon)
+	{
+		FDetachmentTransformRules DetachmentTransformRules(EDetachmentRule::KeepWorld, true);
+		EquippedWeapon->GetItemMesh()->DetachFromComponent(DetachmentTransformRules);
 	}
 }
 
