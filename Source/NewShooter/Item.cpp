@@ -111,6 +111,7 @@ void AItem::SetItemProperties(EItemState State)
 		case EItemState::EIS_Pickup:
 			
 			ItemMesh->SetSimulatePhysics(false);
+			ItemMesh->SetEnableGravity(false);
 			ItemMesh->SetVisibility(true);
 			ItemMesh->SetCollisionResponseToAllChannels(ECR_Ignore);
 			ItemMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -120,7 +121,7 @@ void AItem::SetItemProperties(EItemState State)
 
 			CollisionBox->SetCollisionResponseToAllChannels(ECR_Ignore);
 			CollisionBox->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
-			AreaSphere->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+			CollisionBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		
 			break;
 		
@@ -133,6 +134,7 @@ void AItem::SetItemProperties(EItemState State)
 		case EItemState::EIS_Equipped:
 			
 			ItemMesh->SetSimulatePhysics(false);
+			ItemMesh->SetEnableGravity(false);
 			ItemMesh->SetVisibility(true);
 			ItemMesh->SetCollisionResponseToAllChannels(ECR_Ignore);
 			ItemMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -141,11 +143,24 @@ void AItem::SetItemProperties(EItemState State)
 			AreaSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 			CollisionBox->SetCollisionResponseToAllChannels(ECR_Ignore);
-			AreaSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+			CollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 			
 			break;
 		
 		case EItemState::EIS_Falling:
+			
+			ItemMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+			ItemMesh->SetSimulatePhysics(true);
+			ItemMesh->SetEnableGravity(true);
+			ItemMesh->SetCollisionResponseToAllChannels(ECR_Ignore);
+			ItemMesh->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
+
+			AreaSphere->SetCollisionResponseToAllChannels(ECR_Ignore);
+			AreaSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+			CollisionBox->SetCollisionResponseToAllChannels(ECR_Ignore);
+			CollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		
 			break;
 		
 		case EItemState::EIS_MAX:
