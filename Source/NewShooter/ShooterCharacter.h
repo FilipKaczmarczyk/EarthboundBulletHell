@@ -114,6 +114,9 @@ protected:
 
 	void SelectButtonPressed();
 	void SelectButtonReleased();
+
+	/** Drop currently equipped weapon and equip TraceHitItem */ 
+	void SwapWeapon(AWeapon* WeaponToSwap);
 	
 private:
 	/** Camera Holder */
@@ -245,7 +248,7 @@ private:
 
 	/** Current trace item */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Items,  meta = (AllowPrivateAccess = "true"));
-	class AItem* HitItemLastFrame;
+	class AItem* TraceHitItemLastFrame;
 
 	/** Currently equipped weapon */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Combat,  meta = (AllowPrivateAccess = "true"));
@@ -253,7 +256,11 @@ private:
 
 	/** Set this in Blueprints for the default weapon class */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Combat,  meta = (AllowPrivateAccess = "true"))
-	TSubclassOf<AWeapon> DefaultWeaponClass; 
+	TSubclassOf<AWeapon> DefaultWeaponClass;
+
+	/** The item currently hit by our trace in TraceForItems */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Combat,  meta = (AllowPrivateAccess = "true"))
+	AItem* TraceHitItem;
 	
 public:
 	
