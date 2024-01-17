@@ -8,6 +8,15 @@
 #include "InputMappingContext.h"
 #include "ShooterCharacter.generated.h"
 
+UENUM(BlueprintType)
+enum class EAmmoType : uint8
+{
+	EAT_9mm UMETA(DisplayName = "9mm"),
+	EAT_AR UMETA(DisplayName = "AssaultRifle"),
+
+	EAT_MAX UMETA(DisplayName = "DefaultMAX")
+};
+
 UCLASS()
 class NEWSHOOTER_API AShooterCharacter : public ACharacter
 {
@@ -117,6 +126,9 @@ protected:
 
 	/** Drop currently equipped weapon and equip TraceHitItem */ 
 	void SwapWeapon(AWeapon* WeaponToSwap);
+
+	/** Initialize the Ammo Map with ammo values */
+	void InitializeAmmoMap();
 	
 private:
 	/** Camera Holder */
@@ -269,6 +281,18 @@ private:
 	/** Distance upward from the camera for the interp destination */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Items,  meta = (AllowPrivateAccess = "true"));
 	float CameraInterpElevation;
+
+	/** Map to keep track of ammo of the different ammo types */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Items,  meta = (AllowPrivateAccess = "true"));
+	TMap<EAmmoType, int32> AmmoMap;
+	
+	/** Count of starting ammo type 9mm */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Items,  meta = (AllowPrivateAccess = "true"));
+	int32 Starting9mmAmmo;
+
+	/** Count of starting ammo type AR */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Items,  meta = (AllowPrivateAccess = "true"));
+	int32 StartingARAmmo;
 	
 public:
 	
