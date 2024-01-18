@@ -129,6 +129,9 @@ protected:
 
 	/** Initialize the Ammo Map with ammo values */
 	void InitializeAmmoMap();
+
+	/** Check weapon has ammo */
+	bool WeaponHasAmmo();
 	
 private:
 	/** Camera Holder */
