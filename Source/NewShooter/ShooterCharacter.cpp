@@ -261,16 +261,19 @@ void AShooterCharacter::Jump()
 
 void AShooterCharacter::FireWeapon()
 {
+	if (EquippedWeapon == nullptr)
+		return;
+	
 	if(FireSound)
 	{
 		UGameplayStatics::PlaySound2D(this, FireSound);
 	}
 
-	const USkeletalMeshSocket* BarrelSocket = GetMesh()->GetSocketByName("weapon_barrel_socket");
+	const USkeletalMeshSocket* BarrelSocket = EquippedWeapon->GetItemMesh()->GetSocketByName("barrel_socket");
 
 	if(BarrelSocket)
 	{
-		const FTransform BarrelSocketTransform = BarrelSocket->GetSocketTransform(GetMesh());
+		const FTransform BarrelSocketTransform = BarrelSocket->GetSocketTransform(EquippedWeapon->GetItemMesh());
 
 		if(MuzzleFlash)
 		{
@@ -310,11 +313,8 @@ void AShooterCharacter::FireWeapon()
 
 	// Start bullet fire timer for crosshairs
 	StartCrosshairBulletFire();
-
-	if (EquippedWeapon)
-	{
-		EquippedWeapon->DecrementAmmo();
-	}
+	
+	EquippedWeapon->DecrementAmmo();
 }
 
 bool AShooterCharacter::GetBeamEndLocation(const FVector& MuzzleSocketLocation, FVector& OutBeamLocation)
