@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "ShooterCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "EnhancedInputComponent.h"
@@ -198,7 +197,11 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 			PlayerEnhancedInputComponent->BindAction(SelectAction, ETriggerEvent::Started, this, &AShooterCharacter::SelectButtonPressed);
 			PlayerEnhancedInputComponent->BindAction(SelectAction, ETriggerEvent::Completed, this, &AShooterCharacter::SelectButtonReleased);
 		}
-		
+
+		if (ReloadButtonAction)
+		{
+			PlayerEnhancedInputComponent->BindAction(ReloadButtonAction, ETriggerEvent::Started, this, &AShooterCharacter::ReloadButtonPressed);
+		}
 	}
 }
 
@@ -456,7 +459,7 @@ void AShooterCharacter::AutoFireReset()
 	}
 	else
 	{
-		// RELOAD WEAPON
+		ReloadWeapon();
 	}
 }
 
@@ -708,6 +711,90 @@ void AShooterCharacter::PlayGunFireMontage()
 		AnimInstance->Montage_JumpToSection(FName("StartFire"));
 	}
 }
+
+void AShooterCharacter::ReloadButtonPressed()
+{
+    ReloadWeapon();
+}
+
+void AShooterCharacter::ReloadWeapon()
+{
+	if (CombatState != ECombatState::ECS_Unoccupied) return;
+	if (EquippedWeapon == nullptr) return;
+
+	if (CarryingAmmo())
+	{
+		CombatState = ECombatState::ECS_Reloading;
+	
+		PlayReloadMontage();
+	}
+}
+
+void AShooterCharacter::PlayReloadMontage()
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+
+	if (AnimInstance && ReloadMontage)
+	{
+		AnimInstance->Montage_Play(ReloadMontage);
+		AnimInstance->Montage_JumpToSection(EquippedWeapon->GetReloadMontageSection());
+	}
+}
+
+bool AShooterCharacter::CarryingAmmo()
+{
+	if (EquippedWeapon == nullptr)
+		return false;
+
+	EAmmoType AmmoType = EquippedWeapon->GetAmmoType();
+
+	if (AmmoMap.Contains(AmmoType))
+	{
+		return AmmoMap[AmmoType] > 0;
+	}
+
+	return false;
+}
+
+void AShooterCharacter::FinishReloading()
+{
+	CombatState = ECombatState::ECS_Unoccupied;
+
+	if (EquippedWeapon == nullptr) return;
+
+	const EAmmoType AmmoType = EquippedWeapon->GetAmmoType();
+	
+	if (AmmoMap.Contains(AmmoType))
+	{
+		// Amount of ammo the Character is carrying of the equipped weapon type
+		int32 CarriedAmmo = AmmoMap[AmmoType];
+
+		// Space left in the magazine of equipped weapon
+		const int32 MagEmptySpace = EquippedWeapon->GetMagazineCapacity() - EquippedWeapon->GetAmmo();
+
+		if (MagEmptySpace > CarriedAmmo)
+		{
+			// Reload the magazine with all the ammo we are carrying
+			EquippedWeapon->ReloadAmmo(CarriedAmmo);
+			CarriedAmmo = 0;
+			AmmoMap.Add(AmmoType, CarriedAmmo); // We have AmmoType Key so AmmoMap.Add will set this map to CarriedAmmo (0 in this case)
+		}
+		else
+		{
+			// Fill the magazine
+			EquippedWeapon->ReloadAmmo(MagEmptySpace);
+			CarriedAmmo -= MagEmptySpace;
+			AmmoMap.Add(AmmoType, CarriedAmmo); // We have AmmoType Key so AmmoMap.Add will set this map to CarriedAmmo
+		}
+		
+
+		
+
+		
+	}
+}
+
+
 
 
 
